@@ -1,0 +1,58 @@
+{
+    "mode": "express",
+    "actions": [
+        {
+            "type": "Search_OrderBy_Expand",
+            "name": "Get Outlook Emails",
+            "parameters": {
+                "query": "",
+                "orderBy": "ReceivedDateTime"
+            },
+            "fieldsToReturn": [
+                "From",
+                "Subject",
+                "Body",
+                "ReceivedDateTime"
+            ]
+        },
+        {
+            "type": "Filter_Array_ContainsAll",
+            "name": "Filter Out-Replied Emails",
+            "parameters": {
+                "input": {
+                    "operator": "=",
+                    "values": ["@Microsoft.Graph.Replied"]
+                }
+            }
+        },
+        {
+            "type": "Apply_To_Each",
+            "name": "Respond to All Un-Responded Emails",
+            "parameters": {
+                "input": {
+                    "source": {
+                        "type": "Array",
+                        "value": []
+                    }
+                }
+            },
+            "actions": [
+                {
+                    "type": "Create_HTML_Email",
+                    "name": "Create Response Email",
+                    "parameters": {
+                        "Subject": "Two more weeks",
+                        "Body": "Two more weeks"
+                    }
+                },
+                {
+                    "type": "Send_HTTP_Request_To_Static_URL",
+                    "name": "Send Response Email",
+                    "parameters": {
+                        "url": ""
+                    }
+                }
+            ]
+        }
+    ]
+}
